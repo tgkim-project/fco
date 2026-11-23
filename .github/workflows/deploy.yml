@@ -1,8 +1,11 @@
 name: Deploy to GitHub Pages
 
+# 지금은 수동 실행만 (Actions 탭 → Deploy to GitHub Pages → Run workflow).
+# 저장소 Settings → Pages → Source를 "GitHub Actions"로 켜고 배포가 성공하면
+# 아래 push 트리거를 다시 켜서 자동 배포로 바꾼다.
 on:
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
   workflow_dispatch:
 
 permissions:
