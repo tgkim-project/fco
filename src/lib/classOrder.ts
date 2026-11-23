@@ -1,6 +1,9 @@
 import { CLASS_RELEASE_DATES } from '../data/classReleaseDates.ts'
 import type { ClassMeta } from './nexon/types.ts'
 
+/** 앱에서 숨기는 클래스: 110 ICON TM(제한) */
+export const HIDDEN_CLASSES: ReadonlySet<number> = new Set([110])
+
 /**
  * 클래스를 출시일 최신순으로 정렬한다.
  * - 출시일이 같으면 넥슨 class.json 순서(종류별 최신순)를 따른다

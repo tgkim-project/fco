@@ -1,16 +1,14 @@
 import { useDeferredValue, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 import PlayerImage from '../components/PlayerImage.tsx'
 import { useMeta } from '../hooks/useMeta.ts'
-import { classReleaseRank, sortClassesByRelease } from '../lib/classOrder.ts'
+import { classReleaseRank, HIDDEN_CLASSES, sortClassesByRelease } from '../lib/classOrder.ts'
 import { classOfSpid } from '../lib/nexon/meta.ts'
 import type { ClassMeta } from '../lib/nexon/types.ts'
 import { buildPlayerIndex, searchPlayers, type PlayerGroup } from '../lib/playerSearch.ts'
 
 const PAGE_SIZE = 30
 const MAX_BADGES = 6
-/** 선수 검색에서 숨기는 클래스: 110 ICON TM(제한) */
-const HIDDEN_CLASSES = new Set([110])
 
 /** "ICON TM (ICON The Moment)" → "ICON TM" */
 function shortClassName(name: string) {
@@ -23,8 +21,17 @@ export default function PlayersPage() {
   const classParam = params.get('class')
   const classId = classParam ? Number(classParam) : null
 
-  // 검색창 값은 주소(q)를 그대로 쓴다 → 링크·뒤로 가기로 주소가 바뀌어도 검색창이 맞춰진다
-  const input = query
+  // 검색창은 자체 상태로 즉시 반영한다. 주소(q)는 한 박자 늦게 바뀌므로, 주소 값으로 검색창을 덮어쓰면
+  // 한글 조합 중인 글자가 되돌아가 중복 입력된다. 그래서 검색창이 직접 바꾼 주소(state.fromInput)는 무시하고,
+  // 링크·뒤로 가기처럼 바깥에서 바뀐 주소일 때만 검색창을 맞춘다.
+  const location = useLocation()
+  const fromInput = (location.state as { fromInput?: boolean } | null)?.fromInput === true
+  const [input, setInput] = useState(query)
+  const [prevQuery, setPrevQuery] = useState(query)
+  if (query !== prevQuery) {
+    setPrevQuery(query)
+    if (!fromInput) setInput(query)
+  }
   const deferredInput = useDeferredValue(input)
   const [limit, setLimit] = useState(PAGE_SIZE)
   const [expandedPid, setExpandedPid] = useState<number | null>(null)
@@ -63,10 +70,12 @@ export default function PlayersPage() {
       if (next.class != null) p.set('class', String(next.class))
       else p.delete('class')
     }
-    setParams(p, { replace: true })
+    // 이 화면이 직접 바꾼 주소라는 표시 → 위의 검색창 동기화가 무시한다
+    setParams(p, { replace: true, state: { fromInput: true } })
   }
 
   function handleInput(value: string) {
+    setInput(value)
     setLimit(PAGE_SIZE)
     setExpandedPid(null)
     // 입력 중 띄어쓰기가 지워지지 않도록 trim하지 않는다 (검색할 때 정규화됨)

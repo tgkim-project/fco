@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, useNavigate } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from '../App.tsx'
 import PlayerImage from '../components/PlayerImage.tsx'
@@ -103,6 +103,37 @@ describe('선수 검색 화면', () => {
     renderAt('/players?q=김민재')
     expect(await screen.findByRole('button', { name: /김민재/ })).toBeInTheDocument()
     expect(screen.getByRole('textbox', { name: '선수 이름' })).toHaveValue('김민재')
+  })
+
+  it('주소가 바깥에서 바뀌면(링크·뒤로 가기) 검색창도 따라간다', async () => {
+    function GoTo() {
+      const navigate = useNavigate()
+      return (
+        <button type="button" onClick={() => navigate('/players?q=김민재')}>
+          링크 이동
+        </button>
+      )
+    }
+    const user = userEvent.setup()
+    render(
+      <MemoryRouter initialEntries={['/players?q=손흥민']}>
+        <App />
+        <GoTo />
+      </MemoryRouter>,
+    )
+    const box = screen.getByRole('textbox', { name: '선수 이름' })
+    expect(box).toHaveValue('손흥민')
+    await user.click(screen.getByRole('button', { name: '링크 이동' }))
+    expect(box).toHaveValue('김민재')
+    expect(await screen.findByRole('button', { name: /김민재/ })).toBeInTheDocument()
+  })
+
+  it('입력한 글자가 그대로 한 번만 들어간다', async () => {
+    const user = userEvent.setup()
+    renderAt('/players')
+    const box = screen.getByRole('textbox', { name: '선수 이름' })
+    await user.type(box, '손흥민')
+    expect(box).toHaveValue('손흥민')
   })
 
   it('띄어쓰기를 포함해 입력할 수 있다', async () => {
