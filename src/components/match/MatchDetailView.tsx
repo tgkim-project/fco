@@ -29,7 +29,7 @@ export default function MatchDetailView({ detail, ouid }: Props) {
     [classes.data],
   )
 
-  const playerName = (id: number) => names?.get(id) ?? (spid.loading ? '…' : `#${id}`)
+  const playerName = (id: number) => names?.get(id) ?? (spid.loading ? '…' : '알 수 없는 선수')
 
   const goals = [me, opponent]
     .flatMap((side) =>
@@ -122,7 +122,7 @@ export default function MatchDetailView({ detail, ouid }: Props) {
           </div>
         ) : null,
       )}
-      {spid.error ? <p className="muted small">선수 이름 목록을 불러오지 못해 번호로 표시합니다.</p> : null}
+      {spid.error ? <p className="muted small">선수 이름 목록을 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.</p> : null}
     </div>
   )
 }
