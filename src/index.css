@@ -130,3 +130,122 @@ a {
   background: var(--accent);
   font-weight: 700;
 }
+
+/* 2단계: 폼·안내 (기능 우선, 디자인은 추후 정리) */
+.small {
+  font-size: 0.8rem;
+}
+
+.page h2 {
+  font-size: 1.1rem;
+  margin: 24px 0 8px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.panel input {
+  flex: 1;
+  min-width: 0;
+}
+
+input {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+.button {
+  font: inherit;
+  display: inline-block;
+  padding: 10px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button.secondary,
+.button.secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+button.danger {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.feedback {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.feedback.success {
+  border-color: var(--accent);
+}
+
+.feedback.error {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.feedback.warning {
+  border-color: #d97706;
+}
+
+.notice {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid #d97706;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.notice p {
+  margin: 8px 0 12px;
+}
+
+.steps li,
+.faq dd {
+  margin-bottom: 12px;
+}
+
+.faq dt {
+  font-weight: 700;
+}
+
+.faq dd {
+  margin-left: 0;
+  color: var(--muted);
+}

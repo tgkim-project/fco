@@ -31,10 +31,10 @@ describe('App 라우팅', () => {
     expect(screen.getByRole('heading', { name: '설정' })).toBeInTheDocument()
   })
 
-  it('홈에서 API 키 가이드로 이동할 수 있다', async () => {
+  it('키가 없으면 홈에서 발급 가이드로 이동할 수 있다', async () => {
     const user = userEvent.setup()
     renderAt('/')
-    await user.click(screen.getByRole('link', { name: 'API 키 발급 가이드' }))
+    await user.click(screen.getByRole('link', { name: '발급 방법 보기' }))
     expect(screen.getByRole('heading', { name: 'API 키 발급 가이드' })).toBeInTheDocument()
   })
 

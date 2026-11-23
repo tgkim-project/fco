@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import KeyRequiredNotice from '../components/KeyRequiredNotice.tsx'
+import { useApiKey } from '../hooks/useApiKey.ts'
 
 const FEATURES = [
   { to: '/match', title: '전적 검색', desc: '닉네임으로 등급과 최근 경기 확인' },
@@ -7,6 +9,7 @@ const FEATURES = [
 ]
 
 export default function HomePage() {
+  const apiKey = useApiKey()
   return (
     <section className="page">
       <h1>FC온라인 도우미</h1>
@@ -21,9 +24,14 @@ export default function HomePage() {
           </li>
         ))}
       </ul>
-      <p className="muted">
-        전적 검색을 쓰려면 <Link to="/guide">API 키 발급 가이드</Link>를 참고해 키를 등록하세요.
-      </p>
+      {apiKey ? (
+        <p className="muted">
+          API 키 등록됨 · <Link to="/settings">설정에서 관리</Link>
+        </p>
+      ) : (
+        <KeyRequiredNotice />
+      )}
+      <p className="muted small">Data based on NEXON Open API</p>
     </section>
   )
 }
