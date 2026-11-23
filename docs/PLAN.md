@@ -94,6 +94,16 @@
 - **seasonid 메타데이터 API는 2026-11-19 종료 → season / class 메타데이터 API로 대체** (3·5단계에 반영)
 - 약관: 키 공유 금지(제5조①), 앱에 "Data based on NEXON Open API" 표기(제6조④), 회사 동의 없는 상업적 이용 금지(제6조⑥) → 8단계 전 광고·유료화 여부 결정 필요
 - 데이터는 매시 정각, 두 시간 전까지 반영
+- API 명세 원본: `openapi.nexon.com/static/api/fconline/{2,3,4,5,6}_*.yaml` (2 유저, 3 매치, 4 랭커, 5 메타데이터, 6 이미지)
+- `season.json`은 공식경기 랭크 시즌(예: 202606)이고, 선수 카드 시즌은 `class.json` (spid 앞 3자리 = class, 뒤 6자리 = pid)
+- `spid.json`은 약 9.3만 건·6MB → IndexedDB 캐시(첫 로드 약 0.2초, 이후 약 0.05초, 로컬 측정)
+- 선수 이미지: `fco.dn.nexoncdn.co.kr/live/externalAssets/common/players/p{spid}.png`, 없으면(403) `p{pid}.png`
+- 매치 목록 API는 매치 ID 문자열 배열을 돌려준다. matchtype: 30 리그 친선, 40 클래식 1on1, 50 공식경기, 52 감독모드, 60 공식 친선, 204/214/224/234 볼타
+
+## 할 일 메모
+
+- [ ] GitHub Pages 배포: 지금은 수동 실행만. Settings → Pages → Source "GitHub Actions"로 켜고 수동 배포가 오류 없이 되면 `.github/workflows/deploy.yml`의 push 트리거를 다시 켜서 자동 배포로 변경
+- 저장소는 공개(public) 유지 — 비공개 무료 플랜은 Pages 불가 등 제한이 있음
 
 ## 진행 현황
 
@@ -101,7 +111,7 @@
 |---|---|
 | 1. 프로젝트 뼈대 | 완료 (Pages 배포는 저장소 설정 필요) |
 | 2. API 키 설정과 가이드 | 완료 (가이드 스크린샷은 추후) |
-| 3. API 연결 계층 | 대기 |
+| 3. API 연결 계층 | 완료 (유효한 키로 유저·매치 API 실호출은 미확인) |
 | 4. 전적 검색 | 대기 |
 | 5. 선수 검색 | 대기 |
 | 6. 스쿼드 메이커 | 대기 |
