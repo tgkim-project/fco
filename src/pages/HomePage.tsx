@@ -4,6 +4,7 @@ import { useApiKey } from '../hooks/useApiKey.ts'
 
 const FEATURES = [
   { to: '/match', title: '전적 검색', desc: '최근 경기, 승률·평균 기록, 자주 쓴 선수와 랭커 비교, 자주 만난 상대' },
+  { to: '/watch', title: '관심 유저', desc: '친구·프로게이머를 등록하고 새로 기록된 경기 확인' },
   { to: '/trade', title: '내 거래 기록', desc: '이적시장에서 구매·판매한 선수와 가격(BP)' },
 ]
 

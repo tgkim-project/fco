@@ -17,7 +17,7 @@ describe('App 라우팅', () => {
     renderAt('/')
     expect(screen.getByRole('heading', { name: 'FC온라인 도우미' })).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: '주요 메뉴' })
-    for (const label of ['홈', '전적', '거래', '설정']) {
+    for (const label of ['홈', '전적', '관심', '거래', '설정']) {
       expect(nav).toHaveTextContent(label)
     }
     expect(nav).not.toHaveTextContent('선수')

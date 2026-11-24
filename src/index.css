@@ -420,6 +420,19 @@ button.link {
   overflow-x: auto;
 }
 
+.new-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.watch-detail {
+  padding: 0 12px 10px;
+}
+
 .trade-value {
   display: flex;
   flex-direction: column;

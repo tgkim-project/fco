@@ -129,7 +129,9 @@ export function clearMatchDetailCache() {
 
 /** 매치 상세에서 내 기록과 상대 기록을 나눈다 */
 export function splitMatchSides(detail: MatchDetail, ouid: string) {
-  const me = detail.matchInfo.find((info) => info.ouid === ouid)
-  const opponent = detail.matchInfo.find((info) => info.ouid !== ouid)
+  // 비정상 응답(matchInfo 없음)에도 화면이 깨지지 않도록
+  const infos = Array.isArray(detail.matchInfo) ? detail.matchInfo : []
+  const me = infos.find((info) => info.ouid === ouid)
+  const opponent = infos.find((info) => info.ouid !== ouid)
   return { me, opponent }
 }

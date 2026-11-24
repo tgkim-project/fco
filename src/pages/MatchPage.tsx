@@ -11,6 +11,41 @@ import { getMatchDetails, getMatchIds, getMaxDivision, getOuid, getUserBasic } f
 import { toLookup } from '../lib/nexon/meta.ts'
 import type { MatchTypeMeta, MaxDivision, UserBasic } from '../lib/nexon/types.ts'
 import { addRecentNickname, getRecentNicknames, removeRecentNickname } from '../lib/recentSearches.ts'
+import { addWatchedUser, isWatched, markWatchedSeen, removeWatchedUser, WatchlistFullError } from '../lib/watchlist.ts'
+import { useWatchlist } from '../hooks/useWatchlist.ts'
+
+/** 전적 화면에서 관심 유저로 등록·해제 */
+function WatchToggle({ apiKey, ouid, nickname }: { apiKey: string; ouid: string; nickname: string }) {
+  const watched = useWatchlist().some((u) => u.ouid === ouid)
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState<string | null>(null)
+
+  async function toggle() {
+    setMessage(null)
+    if (watched) {
+      removeWatchedUser(ouid)
+      return
+    }
+    setBusy(true)
+    try {
+      await addWatchedUser({ apiKey }, nickname)
+      setMessage('관심 유저로 등록했습니다. 관심 탭에서 새 경기를 확인할 수 있습니다(경기 후 2~3시간 뒤 반영).')
+    } catch (e) {
+      setMessage(e instanceof WatchlistFullError ? e.message : '관심 유저로 등록하지 못했습니다.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="row">
+      <button type="button" className={watched ? '' : 'secondary'} aria-pressed={watched} onClick={toggle} disabled={busy}>
+        {watched ? '★ 관심 유저' : '☆ 관심 유저 등록'}
+      </button>
+      {message && <span className="muted small">{message}</span>}
+    </div>
+  )
+}
 
 const PAGE_SIZE = 10
 const DEFAULT_MATCH_TYPE = 50
@@ -168,6 +203,8 @@ function PlayerRecord({ apiKey, nickname, matchType, onMatchType, onFound }: Pla
         if (!alive) return
         setProfile(p)
         onFound(p.basic.nickname)
+        // 관심 유저의 전적을 열었으면 새 경기를 "봤음"으로 표시
+        if (isWatched(p.ouid)) markWatchedSeen(p.ouid)
       },
       (e: unknown) => alive && setError(errorMessage(e, 'profile')),
     )
@@ -189,6 +226,7 @@ function PlayerRecord({ apiKey, nickname, matchType, onMatchType, onFound }: Pla
 
   return (
     <>
+      <WatchToggle apiKey={apiKey} ouid={profile.ouid} nickname={profile.basic.nickname} />
       <UserSummary
         basic={profile.basic}
         maxDivisions={profile.maxDivisions}
