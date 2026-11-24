@@ -34,6 +34,21 @@ export function formatGoalTime(goalTime: number): string {
   return `${base + Math.floor(seconds / 60) + 1}'`
 }
 
+/** BP 금액을 조·억·만 단위로 (예: 1234500000000 → "1조 2345억 BP") */
+export function formatBp(value: number): string {
+  if (!Number.isFinite(value) || value <= 0) return '0 BP'
+  const jo = Math.floor(value / 1e12)
+  const eok = Math.floor((value % 1e12) / 1e8)
+  const man = Math.floor((value % 1e8) / 1e4)
+  const parts: string[] = []
+  if (jo) parts.push(`${jo.toLocaleString()}조`)
+  if (eok) parts.push(`${eok.toLocaleString()}억`)
+  // 억 이상이면 만 단위는 생략해 읽기 쉽게
+  if (!jo && !eok && man) parts.push(`${man.toLocaleString()}만`)
+  if (!parts.length) parts.push(value.toLocaleString())
+  return `${parts.join(' ')} BP`
+}
+
 export function percent(success: number, attempts: number): string {
   if (!attempts) return '-'
   return `${Math.round((success / attempts) * 100)}%`

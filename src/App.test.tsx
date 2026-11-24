@@ -17,16 +17,19 @@ describe('App 라우팅', () => {
     renderAt('/')
     expect(screen.getByRole('heading', { name: 'FC온라인 도우미' })).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: '주요 메뉴' })
-    for (const label of ['홈', '전적', '선수', '스쿼드', '설정']) {
+    for (const label of ['홈', '전적', '거래', '설정']) {
       expect(nav).toHaveTextContent(label)
     }
+    expect(nav).not.toHaveTextContent('선수')
+    expect(nav).not.toHaveTextContent('스쿼드')
+    expect(nav).not.toHaveTextContent('랭커')
   })
 
   it('하단 메뉴로 각 화면에 이동한다', async () => {
     const user = userEvent.setup()
     renderAt('/')
-    await user.click(screen.getByRole('link', { name: '스쿼드' }))
-    expect(screen.getByRole('heading', { name: '스쿼드 메이커' })).toBeInTheDocument()
+    await user.click(screen.getByRole('link', { name: '전적' }))
+    expect(screen.getByRole('heading', { name: '전적 검색' })).toBeInTheDocument()
     await user.click(screen.getByRole('link', { name: '설정' }))
     expect(screen.getByRole('heading', { name: '설정' })).toBeInTheDocument()
   })
@@ -40,6 +43,11 @@ describe('App 라우팅', () => {
 
   it('없는 주소는 홈으로 보낸다', () => {
     renderAt('/nope')
+    expect(screen.getByRole('heading', { name: 'FC온라인 도우미' })).toBeInTheDocument()
+  })
+
+  it('지운 선수 검색·스쿼드 주소도 홈으로 보낸다', () => {
+    renderAt('/squad')
     expect(screen.getByRole('heading', { name: 'FC온라인 도우미' })).toBeInTheDocument()
   })
 })

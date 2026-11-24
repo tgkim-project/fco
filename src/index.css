@@ -392,7 +392,48 @@ button.link {
   font-weight: 400;
 }
 
-/* 5단계: 선수 검색 (기능 우선, 디자인은 추후 정리) */
+/* 전적 요약 */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.stat-grid div {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.stat-grid dt {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.stat-grid dd {
+  margin: 2px 0 0;
+  font-weight: 700;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.trade-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+
+.panel h3 {
+  font-size: 1rem;
+  margin: 8px 0 0;
+}
+
+/* 선수 이미지·클래스 배지·선택 상자 (기능 우선, 디자인은 추후 정리) */
 select {
   font: inherit;
   padding: 10px 12px;
@@ -488,133 +529,4 @@ select {
   border: 1px solid var(--border);
   border-radius: 8px;
   text-align: center;
-}
-
-/* 6단계: 스쿼드 메이커 (기능 우선, 디자인은 추후 정리) */
-.pitch {
-  position: relative;
-  width: 100%;
-  max-width: 480px;
-  margin: 8px auto;
-  aspect-ratio: 3 / 4;
-  border-radius: 12px;
-  background: linear-gradient(#15803d, #166534);
-  overflow: hidden;
-}
-
-.pitch-lines {
-  position: absolute;
-  inset: 4%;
-  border: 2px solid rgb(255 255 255 / 0.35);
-  border-radius: 4px;
-}
-
-.pitch-lines::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  border-top: 2px solid rgb(255 255 255 / 0.35);
-}
-
-.slot {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  width: 64px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 2px;
-  background: transparent;
-  border: 2px solid transparent;
-  border-radius: 10px;
-  color: #fff;
-  font-weight: 400;
-}
-
-.slot.selected {
-  border-color: #facc15;
-  background: rgb(0 0 0 / 0.25);
-}
-
-.slot-plus {
-  width: 40px;
-  height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px dashed rgb(255 255 255 / 0.7);
-  border-radius: 50%;
-  font-size: 1.2rem;
-}
-
-.slot-name {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  max-width: 76px;
-  font-size: 0.7rem;
-  line-height: 1.1;
-  text-shadow: 0 1px 2px rgb(0 0 0 / 0.8);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.slot-name .class-badge {
-  height: 12px;
-}
-
-.slot-label {
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 0 4px;
-  border-radius: 4px;
-  background: rgb(0 0 0 / 0.4);
-}
-
-.sheet-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: rgb(0 0 0 / 0.45);
-}
-
-.sheet {
-  width: 100%;
-  max-width: 720px;
-  max-height: 85dvh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
-  border-radius: 16px 16px 0 0;
-  background: var(--surface);
-  color: var(--text);
-}
-
-.picker-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 4px;
-}
-
-.picker-list .player-summary {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-
-button.player-card {
-  width: 100%;
-  background: none;
-  color: var(--text);
-  font-weight: 400;
 }

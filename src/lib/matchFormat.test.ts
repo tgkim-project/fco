@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatGoalTime, parseApiDate, percent, rating } from './matchFormat.ts'
+import { formatBp, formatGoalTime, parseApiDate, percent, rating } from './matchFormat.ts'
 import { addRecentNickname, getRecentNicknames, removeRecentNickname } from './recentSearches.ts'
 
 describe('matchFormat', () => {
@@ -12,6 +12,14 @@ describe('matchFormat', () => {
     expect(formatGoalTime(30)).toBe("1'")
     expect(formatGoalTime(600)).toBe("11'")
     expect(formatGoalTime(2 ** 24 + 600)).toBe("56'")
+  })
+
+  it('BP를 조·억·만 단위로 표시한다', () => {
+    expect(formatBp(1_234_500_000_000)).toBe('1조 2,345억 BP')
+    expect(formatBp(350_000_000)).toBe('3억 BP')
+    expect(formatBp(56_780_000)).toBe('5,678만 BP')
+    expect(formatBp(999)).toBe('999 BP')
+    expect(formatBp(0)).toBe('0 BP')
   })
 
   it('비율과 평점을 표시한다', () => {

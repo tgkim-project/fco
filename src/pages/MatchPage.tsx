@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import KeyRequiredNotice from '../components/KeyRequiredNotice.tsx'
 import MatchList, { type MatchItem } from '../components/match/MatchList.tsx'
+import MatchSummary from '../components/match/MatchSummary.tsx'
 import UserSummary from '../components/match/UserSummary.tsx'
 import { useApiKey } from '../hooks/useApiKey.ts'
 import { useMeta } from '../hooks/useMeta.ts'
@@ -277,8 +278,11 @@ function MatchHistory({ apiKey, ouid, matchType, matchTypeName }: MatchHistoryPr
     }
   }
 
+  const details = items.flatMap((i) => (i.detail ? [i.detail] : []))
+
   return (
     <>
+      {details.length > 0 && <MatchSummary apiKey={apiKey} ouid={ouid} matchType={matchType} details={details} />}
       {items.length > 0 && (
         <MatchList
           ouid={ouid}

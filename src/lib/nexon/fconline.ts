@@ -1,6 +1,15 @@
 import { nexonGet, type FetchLike } from './client.ts'
 import { createRateLimiter } from './rateLimiter.ts'
-import type { MatchDetail, MaxDivision, OuidResponse, UserBasic } from './types.ts'
+import type {
+  MatchDetail,
+  MaxDivision,
+  OuidResponse,
+  RankerStat,
+  RankerStatQuery,
+  TradeItem,
+  TradeType,
+  UserBasic,
+} from './types.ts'
 
 // 개발 단계 키: 초당 5건 (openapi.nexon.com/ko/guide/prepare-in-advance/)
 const schedule = createRateLimiter({ maxPerWindow: 5, windowMs: 1000 })
@@ -76,6 +85,41 @@ export async function getMatchDetails(
       ),
     ),
   )
+}
+
+/** 내 이적시장 거래 기록 (API 키를 발급한 넥슨 계정 본인의 거래만 조회된다). 최근 거래부터 */
+export function getTrades(
+  ctx: FcOnlineContext,
+  tradetype: TradeType,
+  query: { offset?: number; limit?: number } = {},
+): Promise<TradeItem[]> {
+  const limit = Math.min(Math.max(query.limit ?? 20, 1), 100)
+  return get<TradeItem[]>(ctx, '/fconline/v1/user/trade', { tradetype, offset: query.offset ?? 0, limit })
+}
+
+/** 한 번에 보낼 랭커 통계 조회 수 (명세: 많으면 413, 1회 50명 적합) */
+export const RANKER_BATCH_SIZE = 50
+
+/**
+ * TOP 10,000 랭커가 사용한 선수(카드+포지션)의 20경기 평균 스탯.
+ * 50개씩 나눠 요청하고 결과를 합친다. 랭커가 쓰지 않은 조합은 결과에 없을 수 있다.
+ */
+export async function getRankerStats(
+  ctx: FcOnlineContext,
+  matchtype: number,
+  players: RankerStatQuery[],
+): Promise<RankerStat[]> {
+  const results: RankerStat[] = []
+  for (let i = 0; i < players.length; i += RANKER_BATCH_SIZE) {
+    const batch = players.slice(i, i + RANKER_BATCH_SIZE)
+    // URLSearchParams가 JSON 문자열을 URL 인코딩한다
+    const page = await get<RankerStat[]>(ctx, '/fconline/v1/ranker-stats', {
+      matchtype,
+      players: JSON.stringify(batch),
+    })
+    results.push(...page)
+  }
+  return results
 }
 
 /** 테스트용: 메모리 캐시 비우기 */

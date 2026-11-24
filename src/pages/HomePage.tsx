@@ -3,9 +3,8 @@ import KeyRequiredNotice from '../components/KeyRequiredNotice.tsx'
 import { useApiKey } from '../hooks/useApiKey.ts'
 
 const FEATURES = [
-  { to: '/match', title: '전적 검색', desc: '닉네임으로 등급과 최근 경기 확인' },
-  { to: '/players', title: '선수 검색', desc: '이름·시즌으로 선수 찾기' },
-  { to: '/squad', title: '스쿼드 메이커', desc: '포메이션 짜고 저장·공유' },
+  { to: '/match', title: '전적 검색', desc: '최근 경기, 승률·평균 기록, 자주 쓴 선수와 랭커 비교, 자주 만난 상대' },
+  { to: '/trade', title: '내 거래 기록', desc: '이적시장에서 구매·판매한 선수와 가격(BP)' },
 ]
 
 export default function HomePage() {

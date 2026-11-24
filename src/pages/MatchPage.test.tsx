@@ -37,6 +37,17 @@ const ROUTES: Record<string, (url: URL) => [number, unknown]> = {
   '/fconline/v1/user/maxdivision': () => [200, [{ matchType: 50, division: 800, achievementDate: '2026-11-01T10:00:00' }]],
   '/fconline/v1/user/match': () => [200, ['m1']],
   '/fconline/v1/match-detail': () => [200, DETAIL],
+  '/fconline/v1/ranker-stats': () => [
+    200,
+    [
+      {
+        spId: 101000001,
+        spPosition: 25,
+        status: { goal: 0.85, assist: 0.2, passTry: 20, passSuccess: 15, matchCount: 900 },
+        createDate: '2026-11-23T00:00:00',
+      },
+    ],
+  ],
   '/static/fconline/meta/matchtype.json': () => [200, [{ matchtype: 50, desc: '공식경기' }, { matchtype: 52, desc: '감독모드' }]],
   '/static/fconline/meta/division.json': () => [200, [{ divisionId: 800, divisionName: '슈퍼 챔피언스' }]],
   '/static/fconline/meta/division-volta.json': () => [200, []],
@@ -91,6 +102,20 @@ describe('전적 검색', () => {
     expect(screen.getByText("11' 테스트공격수", { exact: false })).toBeInTheDocument()
 
     expect(getRecentNicknames()).toEqual(['테스트유저'])
+  }, 10000)
+
+  it('불러온 경기로 요약 통계를 보여주고 랭커 평균과 비교한다', async () => {
+    const user = userEvent.setup()
+    renderAt('/match?nickname=테스트유저')
+
+    const summary = await screen.findByLabelText('전적 요약', {}, { timeout: 4000 })
+    expect(summary).toHaveTextContent('최근 1경기 · 1승 0무 0패 (승률 100%)')
+    expect(summary).toHaveTextContent('평균 득점2.0')
+    expect(summary).toHaveTextContent('패스 성공률85%')
+    expect(await within(summary).findByText('테스트공격수')).toBeInTheDocument()
+
+    await user.click(within(summary).getByRole('button', { name: '랭커 평균과 비교' }))
+    expect(await within(summary).findByText('0.85 / 0.20 / 75%')).toBeInTheDocument()
   }, 10000)
 
   it('없는 닉네임이면 안내한다', async () => {

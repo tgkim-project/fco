@@ -154,6 +154,52 @@ export interface MatchDetail {
   matchInfo: MatchInfo[]
 }
 
+// ---- 거래 기록 (API 키 주인 본인의 거래만) ----
+
+export type TradeType = 'buy' | 'sell'
+
+export interface TradeItem {
+  /** 거래 일자 (UTC0). 구매는 구매 등록 시점, 판매는 판매 완료 시점 */
+  tradeDate: string
+  saleSn: string
+  spid: number
+  /** 강화 등급 */
+  grade: number
+  /** 거래 가치(BP) */
+  value: number
+}
+
+// ---- 랭커 통계 (TOP 10,000 랭커가 사용한 선수의 20경기 평균) ----
+
+export interface RankerStatQuery {
+  /** spid */
+  id: number
+  /** spposition */
+  po: number
+}
+
+export interface RankerStat {
+  spId: number
+  spPosition: number
+  status: {
+    shoot: number
+    effectiveShoot: number
+    assist: number
+    goal: number
+    dribble: number
+    dribbleTry: number
+    dribbleSuccess: number
+    passTry: number
+    passSuccess: number
+    block: number
+    tackle: number
+    /** 해당 포지션으로 경기 참여한 횟수 */
+    matchCount: number
+  }
+  /** 집계 시각 (UTC0) */
+  createDate: string
+}
+
 // ---- 메타데이터 (키 불필요) ----
 
 export interface MatchTypeMeta {

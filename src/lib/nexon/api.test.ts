@@ -6,6 +6,8 @@ import {
   getMatchDetails,
   getMatchIds,
   getOuid,
+  getRankerStats,
+  getTrades,
   splitMatchSides,
 } from './fconline.ts'
 import { playerImageUrls } from './images.ts'
@@ -103,6 +105,32 @@ describe('fconline API', () => {
     const { me, opponent } = splitMatchSides(detail, 'ME')
     expect(me?.ouid).toBe('ME')
     expect(opponent?.ouid).toBe('OPP')
+  })
+})
+
+describe('거래·랭커 API', () => {
+  it('거래 기록은 tradetype·offset·limit으로 조회한다', async () => {
+    const fetchImpl = vi.fn<FetchLike>(async () => jsonResponse(200, []))
+    await getTrades({ apiKey: 'K', fetchImpl }, 'sell', { offset: 20, limit: 500 })
+    const url = new URL(fetchImpl.mock.calls[0][0])
+    expect(url.pathname).toBe('/fconline/v1/user/trade')
+    expect(url.searchParams.get('tradetype')).toBe('sell')
+    expect(url.searchParams.get('offset')).toBe('20')
+    expect(url.searchParams.get('limit')).toBe('100')
+  })
+
+  it('랭커 통계는 50개씩 나눠 요청하고 결과를 합친다', async () => {
+    const fetchImpl = vi.fn<FetchLike>(async (input) => {
+      const players = JSON.parse(new URL(input).searchParams.get('players') ?? '[]') as Array<{ id: number }>
+      return jsonResponse(200, players.map((p) => ({ spId: p.id })))
+    })
+    const query = Array.from({ length: 120 }, (_, i) => ({ id: i + 1, po: 25 }))
+    const result = await getRankerStats({ apiKey: 'K', fetchImpl }, 52, query)
+    expect(fetchImpl).toHaveBeenCalledTimes(3)
+    const sizes = fetchImpl.mock.calls.map(([u]) => JSON.parse(new URL(u).searchParams.get('players') ?? '[]').length)
+    expect(sizes).toEqual([50, 50, 20])
+    expect(new URL(fetchImpl.mock.calls[0][0]).searchParams.get('matchtype')).toBe('52')
+    expect(result).toHaveLength(120)
   })
 })
 

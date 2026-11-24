@@ -3,8 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 const NAV_ITEMS = [
   { to: '/', label: '홈', end: true },
   { to: '/match', label: '전적' },
-  { to: '/players', label: '선수' },
-  { to: '/squad', label: '스쿼드' },
+  { to: '/trade', label: '거래' },
   { to: '/settings', label: '설정' },
 ]
 

@@ -6,7 +6,7 @@ export default function KeyRequiredNotice() {
     <div className="notice" role="status">
       <strong>API 키가 필요합니다</strong>
       <p>
-        전적 검색은 NEXON Open API를 사용합니다. 내 API 키를 발급받아 등록해 주세요. 키는 이 기기에만
+        전적 검색과 거래 기록은 NEXON Open API를 사용합니다. 내 API 키를 발급받아 등록해 주세요. 키는 이 기기에만
         저장됩니다.
       </p>
       <div className="row">
